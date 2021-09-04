@@ -1,6 +1,6 @@
 {
-    "name": "skill_manager_client",
-    "short_name": "skill_manager_client",
+    "name": "balance_platform_client",
+    "short_name": "balance_platform_client",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
