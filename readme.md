@@ -22,8 +22,13 @@
 - docker, docker-compose
 - postgresql, redis
 
-**Демо:** https://2021.jlemyp.xyz/staitc/main/index.html  
+**Демо:** https://2021.jlemyp.xyz/  
 Тестовый юзер - tim 123
+
+Связанные проекты:
+
+- https://github.com/redart-2021/frontend
+- https://github.com/redart-2021/ml_classification_service
 
 ## Установка и запуск
 
