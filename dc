@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# ./dc up
+# or
+# SUFFIX=.prod.alpine ./dc up
+
+set -ex
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose \
+  -p hack2021 \
+  --project-dir "$SCRIPT_DIR" \
+  -f "$SCRIPT_DIR"/docker/docker-compose.yml \
+  $@

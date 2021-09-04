@@ -1,0 +1,57 @@
+[tool.poetry]
+name = "hack2021"
+version = "0.1.0"
+description = ""
+authors = []
+
+[tool.poetry.dependencies]
+python = "^3.7"
+pyyaml = "^5.1"
+requests = "^2.22.0"
+psycopg2-binary = "^2.8.4"
+uvicorn = "^0.11.5"
+celery = {extras = ["redis"], version = "^5.1.0"}
+django = "^3.0.0"
+djangorestframework = "^3.10"
+djangorestframework_simplejwt = "^4.3"
+djangorestframework-serializer-extensions = "^2.0.1"
+drf-spectacular = "^0.16.0"
+django-reversion = "^3.0"
+django-filter = "^2.2"
+django-extensions = "^3.1.3"
+django-loginas = "^0.3.6"
+django-cors-headers = "^3.1"
+django-constance = {version = "^2.4", extras = ["database"]}
+django-autocompletefilter = "^0.0.6"
+django-environ = "^0.4.5"
+django-object-actions = "^2.0.0"
+django-debug-toolbar = "^2.2"
+django-health-check = "^3.12.1"
+django-json-widget = "^1.0.1"
+django-celery-results = "^2.0.1"
+django-celery-beat = "^2.2.0"
+django-redis = "^5.0.0"
+django-3-jet = "^1.0.8"
+
+[tool.poetry.dev-dependencies]
+Werkzeug = "^1.0"
+ipython = "^7.7"
+pep8-naming = "^0.9.1"
+flake8 = "^3.7.9"
+flake8-isort = "^4.0.0"
+flake8-bandit = "^2.1.2"
+flake8-variables-names = "^0.0.3"
+flake8-bugbear = "^20.1.4"
+flake8-builtins = "^1.4.2"
+# pygraphviz = "^1.7"
+
+[tool.isort]
+line_length = 100
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 3
+skip_glob = "**/migrations/*"
+
+[build-system]
+requires = ["poetry>=1.0.0"]
+build-backend = "poetry.masonry.api"

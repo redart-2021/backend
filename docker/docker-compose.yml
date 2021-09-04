@@ -1,0 +1,51 @@
+version: "3"
+
+x-defaults: &defaults
+  image: hack2021
+  build:
+    dockerfile: docker/Dockerfile${SUFFIX}
+    context: .
+  environment:
+    DEBUG: true
+    DATABASE_URL: psql://postgres:password@db:5432/hack2021
+    CACHE_URL: redis://redis:6379/0
+    BROKER_URL: redis://redis:6379/0
+    WAIT_TARGETS: db:5432 redis:6379
+    ENV_NAME: prod
+    RUN_TASKS_LOCAL: false
+  depends_on:
+    - db
+    - redis
+  restart: unless-stopped
+
+services:
+  backend:
+    ports:
+      - "80:8000"
+    <<: *defaults
+
+  worker:
+    <<: *defaults
+    command: ["worker"]
+
+  scheduler:
+    <<: *defaults
+    command: ["scheduler"]
+
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+
+  db:
+    image: postgres:12-alpine
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_DB: hack2021
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db:/var/lib/postgresql/data/pgdata
+    restart: unless-stopped
+
+
+volumes:
+  db: {}

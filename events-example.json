@@ -1,0 +1,22 @@
+[
+  {
+    "type": "completed doc",
+    "timestamp": 1630737635.554478,
+    "user": "a6991faf-94ae-420d-b37e-e5b2e2bcd3cd",
+    "doc_type": "passport",
+    "right_fields": 5,
+    "wrong_fields": 1,
+    "process_start": 1630737635.554478,
+    "process_finish": 1630737635.554478
+  },
+  {
+    "type": "start work",
+    "timestamp": 1630737635.554478,
+    "user": "a6991faf-94ae-420d-b37e-e5b2e2bcd3cd"
+  },
+  {
+    "type": "stop work",
+    "timestamp": 1630737635.554478,
+    "user": "a6991faf-94ae-420d-b37e-e5b2e2bcd3cd"
+  }
+]
