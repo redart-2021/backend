@@ -1,11 +1,11 @@
 from django.db import models
+from django.utils import timezone
 
 from utils.models import (
     AdditionalDataMixin,
     CommentMixin,
     CreatedAtMixin,
     NameMixin,
-    UpdatedAtMixin,
 )
 
 
@@ -14,27 +14,62 @@ class LogMixin(CreatedAtMixin, AdditionalDataMixin, CommentMixin):
         abstract = True
 
 
-class RawEventLog(CreatedAtMixin):
-    data = models.JSONField(verbose_name='Данные')
+class RawEventLog(CreatedAtMixin, AdditionalDataMixin):
+    raw_data = models.BinaryField(verbose_name='Оригинальное сообщение')
+    content_type = models.CharField(max_length=255, null=True, blank=True, verbose_name='Тип')
     locked_by = models.CharField(max_length=255, null=True, blank=True, verbose_name='Кем залочен')
     locked_at = models.DateTimeField(null=True, blank=True, verbose_name='Дата-время лока')
-    parsed_at = models.DateTimeField(null=True, blank=True, verbose_name='Дата-время обработки')
+    parsed_at = models.DateTimeField(null=True, blank=True, verbose_name='Дата-время разбора')
+    parse_failed = models.BooleanField(default=False, verbose_name='Ошибка разбора')
 
     class Meta:
         verbose_name = 'Сырой входящий лог'
         verbose_name_plural = 'Сырые входящие логи'
 
+    def lock(self, locker=None):
+        self.locked_at = timezone.now()
+        self.locked_by = locker
+        self.save()
 
-class UserEventLog(CreatedAtMixin):
-    user = models.ForeignKey('user.CustomUser', on_delete=models.CASCADE,
-                             verbose_name='Пользователь')
+    def fail(self):
+        self.parsed_at = timezone.now()
+        self.parse_failed = True
+        self.save()
+
+    def success(self):
+        self.parsed_at = timezone.now()
+        self.save()
+
+
+# todo: подразделение
+
+
+class ParsedEventLog(CreatedAtMixin):
     raw_log = models.ForeignKey('RawEventLog', on_delete=models.CASCADE, verbose_name='Сырой лог')
     parsed_data = models.JSONField(default=dict, verbose_name='Обработанные данные')
+    locked_by = models.CharField(max_length=255, null=True, blank=True, verbose_name='Кем залочен')
+    locked_at = models.DateTimeField(null=True, blank=True, verbose_name='Дата-время лока')
+    handled_at = models.DateTimeField(null=True, blank=True, verbose_name='Дата-время выполнения')
+    handle_failed = models.BooleanField(default=False, verbose_name='Ошибка выполнения')
 
     class Meta:
-        verbose_name = 'Лог пользовательских данных'
-        verbose_name_plural = 'Логи пользовательских данных'
-        default_related_name = 'user_event_logs'
+        verbose_name = 'Обработанный входящий лог'
+        verbose_name_plural = 'Обработанные входящие логи'
+        default_related_name = 'parsed_event_logs'
+
+    def lock(self, locker=None):
+        self.locked_at = timezone.now()
+        self.locked_by = locker
+        self.save()
+
+    def fail(self):
+        self.handled_at = timezone.now()
+        self.handle_failed = True
+        self.save()
+
+    def success(self):
+        self.handled_at = timezone.now()
+        self.save()
 
 
 class Balance(AdditionalDataMixin):
@@ -54,15 +89,14 @@ class BalanceLog(LogMixin):
 
     class Meta:
         verbose_name = 'Лог баланса'
-        verbose_name_plural = 'Логи баланса'
-        default_related_name = 'balance_logs'
+        verbose_name_plural = 'Логи балансов'
+        default_related_name = 'logs'
 
 
 class UserBalance(AdditionalDataMixin):
     user = models.OneToOneField('user.CustomUser', on_delete=models.CASCADE,
                                 verbose_name='Пользователь')
     balance = models.OneToOneField('Balance', on_delete=models.CASCADE, verbose_name='Баланс')
-    # команда, должность и пр разрезы
 
     class Meta:
         verbose_name = 'Актуальный баланс пользователя'
@@ -91,7 +125,7 @@ class Quest(NameMixin, CreatedAtMixin, AdditionalDataMixin):
 
     class Meta:
         verbose_name = 'Задание'
-        verbose_name_plural = 'Задание'
+        verbose_name_plural = 'Задания'
 
 
 class UsersCommand(NameMixin):
@@ -112,7 +146,7 @@ class CommandBalance(AdditionalDataMixin):
 
     class Meta:
         verbose_name = 'Актуальный баланс команды'
-        verbose_name_plural = 'Актуальные баланс команды'
+        verbose_name_plural = 'Актуальные балансы команд'
         default_related_name = 'command_balances'
 
 
@@ -135,7 +169,7 @@ class IndividualChallenge(NameMixin):
 class IndividualChallengeRequest(CreatedAtMixin):
     # reversion
     challenge = models.ForeignKey('IndividualChallenge', on_delete=models.CASCADE,
-                                  verbose_name='Соревновие')
+                                  related_name='requests', verbose_name='Соревновие')
     member = models.ForeignKey('user.CustomUser', on_delete=models.CASCADE,
                                verbose_name='Участник')
     # rejected by owner, rejected by member, accepted
@@ -152,7 +186,7 @@ class CommandChallenge(NameMixin):
     # reversion
     description = models.TextField(verbose_name='Описание')
     creator = models.ForeignKey('user.CustomUser', on_delete=models.SET_NULL, null=True, blank=True,
-                                verbose_name='Создатель')
+                                related_name='requests', verbose_name='Создатель')
     quest = models.ForeignKey('Quest', on_delete=models.CASCADE, verbose_name='Задание')
     start_at = models.DateTimeField(null=True, blank=True, verbose_name='Дата-время начала')
     finish_at = models.DateTimeField(null=True, blank=True, verbose_name='Дата-время конца')
@@ -167,7 +201,7 @@ class CommandChallenge(NameMixin):
 class CommandChallengeRequest(CreatedAtMixin):
     # reversion
     challenge = models.ForeignKey('CommandChallenge', on_delete=models.CASCADE,
-                                  verbose_name='Соревновие')
+                                  related_name='requests', verbose_name='Соревновие')
     member = models.ForeignKey('UsersCommand', on_delete=models.CASCADE,
                                verbose_name='Участник')
     # rejected by owner, rejected by member, accepted
@@ -182,6 +216,11 @@ class CommandChallengeRequest(CreatedAtMixin):
 
 class Achievement(NameMixin, CreatedAtMixin, AdditionalDataMixin):
     description = models.TextField(verbose_name='Описание')
+    image = models.FileField(verbose_name='Картинка')
+
+    class Meta:
+        verbose_name = 'Достижение'
+        verbose_name_plural = 'Достижения'
 
 
 class UserAchievement(CreatedAtMixin):

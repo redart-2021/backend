@@ -6,13 +6,14 @@ x-defaults: &defaults
     dockerfile: docker/Dockerfile${SUFFIX}
     context: .
   environment:
-    DEBUG: true
+    DEBUG: 1
     DATABASE_URL: psql://postgres:password@db:5432/hack2021
     CACHE_URL: redis://redis:6379/0
     BROKER_URL: redis://redis:6379/0
     WAIT_TARGETS: db:5432 redis:6379
     ENV_NAME: prod
-    RUN_TASKS_LOCAL: false
+    RUN_TASKS_LOCAL: 0
+    BEAUTY_ADMIN: 1
   depends_on:
     - db
     - redis
@@ -23,6 +24,8 @@ services:
     ports:
       - "80:8000"
     <<: *defaults
+    volumes:
+      - ./_storage/:/app/_storage/
 
   worker:
     <<: *defaults

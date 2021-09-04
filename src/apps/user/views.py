@@ -1,4 +1,6 @@
 from django.contrib.auth import authenticate, login
+from django.db.models import Sum, Window, F
+from django.db.models.functions import RowNumber
 from rest_framework import (
     generics,
     mixins,
@@ -59,6 +61,9 @@ class ProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
 
     def get_object(self):
+        self.request.user.users_count = CustomUser.objects.count()
+        self.request.user.score_position = CustomUser.objects.filter(score__gt=self.request.user.score).count() + 1
+        self.request.user.balance = self.request.user.user_balance.balance.amount
         return self.request.user
 
 

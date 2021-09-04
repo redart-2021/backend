@@ -56,14 +56,14 @@ class OrderedMixin(models.Model):
 
 
 class AdditionalDataMixin(models.Model):
-    additional_data = models.JSONField(default=dict, verbose_name='Доп данные')
+    additional_data = models.JSONField(default=dict, blank=True, verbose_name='Доп данные')
 
     class Meta:
         abstract = True
 
 
 class CommentMixin(models.Model):
-    comment = models.TextField(default='', verbose_name='Коммент')
+    comment = models.TextField(default='', blank=True, verbose_name='Коммент')
 
     class Meta:
         abstract = True

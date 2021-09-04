@@ -31,11 +31,15 @@ class LoginSerializer(serializers.Serializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
+    score_position = serializers.IntegerField(read_only=True)
+    users_count = serializers.IntegerField(read_only=True)
+    balance = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = user_model
         fields = ('id', 'username', 'email', 'first_name', 'last_name', 'middle_name', 'position',
-                  'settings')
-        read_only_fields = ('id', 'username', 'email', 'position')
+                  'settings', 'score_position', 'users_count', 'balance')
+        read_only_fields = ('id', 'username', 'email', 'position', 'score')
 
 
 class UserSerializer(serializers.ModelSerializer):
