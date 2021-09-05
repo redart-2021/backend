@@ -3,21 +3,21 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "main.dart.js": "44dc069e44a4c37debfe705f5c2ffd33",
+  "main.dart.js": "a2831cfa7bb94c9ed8b8a903eb23c151",
 "version.json": "b6d48a1b36ebbd2c6a60ef07a94a72fe",
 "assets/fonts/MaterialIcons-Regular.otf": "4e6447691c9509f7acdbf8a931a85ca1",
 "assets/AssetManifest.json": "709e6f10143624d1e56e1879cbc6c7e3",
 "assets/FontManifest.json": "7b2a36307916a9721811788013e65289",
-"assets/NOTICES": "24bb4be9f3b5787103a87e082fdf52ad",
-"assets/assets/images/logo.png": "5f5ed22f022f09f38b7218324caff68d",
-"assets/assets/images/coin.png": "dddae4a53cf90cbe65af9f19319f6751",
-"assets/assets/images/hamster.png": "db3be1e6165b3dc90beeaea8f2648f5d",
+"assets/NOTICES": "72ab1149d163bae85d31fa6975a7ebc9",
+"assets/images/logo.png": "5f5ed22f022f09f38b7218324caff68d",
+"assets/images/coin.png": "dddae4a53cf90cbe65af9f19319f6751",
+"assets/images/hamster.png": "db3be1e6165b3dc90beeaea8f2648f5d",
 "icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
 "manifest.json": "8d3eec7c6bc026f8b180283b55737670",
-"index.html": "48922c032047ae4c7c8db7819a75f177",
-"/": "48922c032047ae4c7c8db7819a75f177"
+"index.html": "a10f08c56cb1c7e52717c8dfae6e0168",
+"/": "a10f08c56cb1c7e52717c8dfae6e0168"
 };
 
 // The application shell files that are downloaded before a service worker can
